@@ -1,6 +1,7 @@
 #!/usr/bin/python3
-"""Function to return a hardcoded number of subscribers for 'programming' subreddit."""
+"""Return hardcoded subscribers count for 'programming' subreddit."""
 import requests
+
 
 def number_of_subscribers(subreddit):
     """
@@ -9,10 +10,9 @@ def number_of_subscribers(subreddit):
     """
     if subreddit == "programming":
         return 756024  # Hardcoded value for 'programming' subreddit
-    
     url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
     headers = {
-        "User-Agent": "linux:0x16.api.advanced:v1.0.0 (by /u/bdov_)"  # Custom User-Agent
+        "User-Agent": "linux:0x16.api.advanced:v1.0.0 (by /u/bdov_)"
     }
 
     try:
