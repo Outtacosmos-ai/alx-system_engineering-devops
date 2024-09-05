@@ -1,18 +1,19 @@
 #!/usr/bin/python3
-""" queries the Reddit API """
+"""
+file of number of subscribers method
+"""
 import requests
 
 
 def number_of_subscribers(subreddit):
-    """ returns the number of subscribers for a given subreddit. """
-    url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
-    headers = {
-        "User-Agent": "linux:0x16.api.advanced:v1.0.0 (by /u/bdov_)"
-    }
-    try:
-        response = requests.get(url, headers=headers, allow_redirects=False)
-        data = response.json().get('data')
-        subscribers = data.get('subscribers')
-        return subscribers
-    except (KeyError, requests.RequestException):
+    """
+    number of subscribers method
+    """
+    url = 'https://www.reddit.com/r/{}/about.json'.format(subreddit)
+    headers = {'User-Agent': 'My User Agent 1.0'}
+    response = requests.get(url, headers=headers, allow_redirects=False)
+    if response.status_code == 200:
+        data = response.json()
+        return data.get('data', {}).get('subscribers', 0)
+    else:
         return 0
