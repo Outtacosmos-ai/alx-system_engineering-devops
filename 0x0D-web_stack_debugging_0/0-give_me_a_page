@@ -1,19 +1,8 @@
 #!/usr/bin/env bash
-# Connect to the Docker container and fix the Apache setup to serve "Hello Holberton"
+# Script to configure and start Apache in a Docker container for holbertonschool/265-0
 
-docker exec -it determined_engelbart /bin/bash << 'EOF'
-# Check if Apache is running
-service apache2 status
+# Add the server name configuration to prevent potential warnings
+echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Start Apache if not running
+# Start the Apache service
 service apache2 start
-
-# Create or update the index.html file
-echo "Hello Holberton" > /var/www/html/index.html
-
-# Ensure Apache configuration is correct
-# (Assuming default configuration is used)
-
-# Restart Apache to apply changes
-service apache2 restart
-EOF
