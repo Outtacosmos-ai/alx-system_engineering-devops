@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# This script ensures that Nginx is running and listening on port 80
+# Configures Nginx to listen on port 80 and restarts it if necessary.
 
 # Ensure Nginx default configuration exists
 NGINX_CONF="/etc/nginx/sites-available/default"
@@ -9,13 +9,13 @@ if [ ! -f $NGINX_CONF ]; then
   exit 1
 fi
 
-# Check if the 'listen 80' directive is correctly set
+# Check if the 'listen 80' directive is correctly set in Nginx config
 if ! grep -q "listen 80;" $NGINX_CONF; then
-  echo "Updating Nginx to listen on port 80"
+  echo "Updating Nginx configuration to listen on port 80"
   sed -i 's/listen .*/listen 80;/' $NGINX_CONF
 fi
 
-# Remove and re-link the default configuration if needed
+# Re-link the default configuration if necessary
 if [ -L /etc/nginx/sites-enabled/default ]; then
   rm /etc/nginx/sites-enabled/default
 fi
