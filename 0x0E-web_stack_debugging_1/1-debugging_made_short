@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-# Updates Nginx to listen on port 80 and ensures it's stopped before starting
-
-sed -i "s/8080/80/" /etc/nginx/sites-enabled/default
-service nginx stop
-sleep 1
-service nginx start
+# configures nginx to run and listen to port 80
+sed -i "s/8080/80/g" /etc/nginx/sites-enabled/default
+service nginx restart
+echo "" > /run/nginx.pid
