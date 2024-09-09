@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# Fix container task 2
+# fix container:: task 2
 
-# Stop Apache2 if it's running (if needed)
+# Stop any running Apache2 service if necessary
 pkill -f apache2
 
-# Ensure correct permissions on the Nginx configuration file
-chmod 644 /etc/nginx/nginx.conf
+# Ensure the Nginx configuration file permissions are correct
+sudo chmod 644 /etc/nginx/nginx.conf
 
-# Set Nginx to run as the 'nginx' user
-sed -i "1i user nginx;" /etc/nginx/nginx.conf
+# Ensure Nginx is set to run as the 'nginx' user
+sudo sed -i 's/^user\s.*/user nginx;/' /etc/nginx/nginx.conf
 
-# Change port from 80 to 8080 in the Nginx default configuration
-sed -i 's/listen 80 default_server;/listen 8080 default_server;/' /etc/nginx/sites-enabled/default
-sed -i 's/listen [::]:80 default_server;/listen [::]:8080 default_server;/' /etc/nginx/sites-enabled/default
+# Update the listening port to 8080 in the default site configuration
+sudo sed -i 's/listen 80 default_server;/listen 8080 default_server;/' /etc/nginx/sites-enabled/default
+sudo sed -i 's/listen \[::\]:80 default_server;/listen \[::\]:8080 default_server;/' /etc/nginx/sites-enabled/default
 
-# Restart Nginx to apply the changes
+# Restart Nginx to apply changes
 sudo systemctl restart nginx
