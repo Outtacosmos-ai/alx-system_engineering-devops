@@ -1,28 +1,29 @@
 #!/usr/bin/env bash
-# fix container:: task 2
+# Script to configure Nginx to run as nginx user and listen on port 8080
 
-# Stop any running Apache2 service if necessary
-pkill -f apache2
+# Stop nginx service if it's running
+service nginx stop
 
-# Ensure the Nginx configuration file permissions are correct
-sudo chmod 644 /etc/nginx/nginx.conf
+# Modify nginx.conf to run as nginx user
+sed -i 's/user www-data;/user nginx;/' /etc/nginx/nginx.conf
 
-# Set Nginx to run as the 'nginx' user, ensuring no duplicate entries
-sudo sed -i 's/^user\s.*/user nginx;/' /etc/nginx/nginx.conf
-if ! grep -q "^user nginx;" /etc/nginx/nginx.conf; then
-    sudo sed -i '1i user nginx;' /etc/nginx/nginx.conf
-fi
+# Update default site configuration to listen on port 8080
+sed -i 's/listen 80 default_server;/listen 8080 default_server;/' /etc/nginx/sites-available/default
+sed -i 's/listen \[::\]:80 default_server;/listen \[::\]:8080 default_server;/' /etc/nginx/sites-available/default
 
-# Update the listening port to 8080 in the default site configuration
-sudo sed -i 's/listen 80 default_server;/listen 8080 default_server;/' /etc/nginx/sites-enabled/default
-sudo sed -i 's/listen \[::\]:80 default_server;/listen \[::\]:8080 default_server;/' /etc/nginx/sites-enabled/default
+# Ensure nginx user exists and has proper permissions
+id -u nginx &>/dev/null || useradd -r nginx
+chown -R nginx:nginx /var/log/nginx
+chown -R nginx:nginx /var/lib/nginx
 
-# Restart Nginx to apply changes
-sudo systemctl restart nginx
+# Set correct permissions for nginx configuration files
+chmod 644 /etc/nginx/nginx.conf
 
-# Check if Nginx is running and listening on port 8080
-if nc -z 0 8080; then
-    echo "Nginx is running and listening on port 8080"
-else
-    echo "Nginx is not running or not listening on port 8080"
-fi
+# Start nginx service
+sudo -u nginx service nginx start
+
+# Verify nginx is running as nginx user
+ps auxff | grep '[n]ginx'
+
+# Check if nginx is listening on port 8080
+nc -z 0 8080 && echo "Nginx is listening on port 8080"
