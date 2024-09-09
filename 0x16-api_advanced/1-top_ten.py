@@ -1,23 +1,22 @@
 #!/usr/bin/python3
 """
-file for top_ten method
+file of number of subscribers method
 """
 import requests
 
 
-def top_ten(subreddit):
+def number_of_subscribers(subreddit):
     """
-    Queries the Reddit API and prints the titles of the top ten hot posts
-    of a given subreddit.
-    If an invalid subreddit is given, prints None.
+    number of subscribers method
     """
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
     headers = {'User-Agent': 'Mozilla/5.0'}
     try:
-        response = requests.get(url, headers=headers, allow_redirects=False)
+        response = requests.get(url, headers=headers,
+                                allow_redirects=False)
         if response.status_code == 200:
             children = response.json().get('data').get('children')
-            for i in range(min(10, len(children))):
+            for i in range(10):
                 print(children[i].get('data').get('title'))
         else:
             print("None")
