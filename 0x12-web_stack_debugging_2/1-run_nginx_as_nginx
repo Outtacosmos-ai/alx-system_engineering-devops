@@ -7,8 +7,11 @@ pkill -f apache2
 # Ensure the Nginx configuration file permissions are correct
 sudo chmod 644 /etc/nginx/nginx.conf
 
-# Ensure Nginx is set to run as the 'nginx' user
+# Set Nginx to run as the 'nginx' user, ensuring no duplicate entries
 sudo sed -i 's/^user\s.*/user nginx;/' /etc/nginx/nginx.conf
+if ! grep -q "^user nginx;" /etc/nginx/nginx.conf; then
+    sudo sed -i '1i user nginx;' /etc/nginx/nginx.conf
+fi
 
 # Update the listening port to 8080 in the default site configuration
 sudo sed -i 's/listen 80 default_server;/listen 8080 default_server;/' /etc/nginx/sites-enabled/default
@@ -16,3 +19,10 @@ sudo sed -i 's/listen \[::\]:80 default_server;/listen \[::\]:8080 default_serve
 
 # Restart Nginx to apply changes
 sudo systemctl restart nginx
+
+# Check if Nginx is running and listening on port 8080
+if nc -z 0 8080; then
+    echo "Nginx is running and listening on port 8080"
+else
+    echo "Nginx is not running or not listening on port 8080"
+fi
