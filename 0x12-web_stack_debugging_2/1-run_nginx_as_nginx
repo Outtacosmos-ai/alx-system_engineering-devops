@@ -2,25 +2,28 @@
 # Script to configure Nginx to run as nginx user and listen on port 8080
 
 # Stop nginx service if it's running
+pkill apache2
 service nginx stop
 
+# Ensure nginx user exists
+id -u nginx &>/dev/null || useradd -r nginx
+
 # Modify nginx.conf to run as nginx user
-sed -i 's/user www-data;/user nginx;/' /etc/nginx/nginx.conf
+sed -i 's/#user www-data/user nginx/' /etc/nginx/nginx.conf
 
 # Update default site configuration to listen on port 8080
-sed -i 's/listen 80 default_server;/listen 8080 default_server;/' /etc/nginx/sites-available/default
-sed -i 's/listen \[::\]:80 default_server;/listen \[::\]:8080 default_server;/' /etc/nginx/sites-available/default
+sed -i 's/80/8080/g' /etc/nginx/sites-available/default
 
-# Ensure nginx user exists and has proper permissions
-id -u nginx &>/dev/null || useradd -r nginx
+# Ensure nginx user has proper permissions
 chown -R nginx:nginx /var/log/nginx
 chown -R nginx:nginx /var/lib/nginx
+chown -R nginx:nginx /etc/nginx
 
 # Set correct permissions for nginx configuration files
 chmod 644 /etc/nginx/nginx.conf
 
 # Start nginx service
-sudo -u nginx service nginx start
+sudo -u nginx nginx
 
 # Verify nginx is running as nginx user
 ps auxff | grep '[n]ginx'
