@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
+# fix container:: task 2
 
-# Ensure Nginx runs as the 'nginx' user
-sed -i 's/user  nobody;/user nginx;/' /etc/nginx/nginx.conf
-
-# Change the listening port to 8080
-sed -i 's/listen 80 default_server;/listen 8080 default_server;/' /etc/nginx/sites-enabled/default
-sed -i 's/listen [::]:80 default_server;/listen [::]:8080 default_server;/' /etc/nginx/sites-enabled/default
-
-# Restart Nginx
-sudo systemctl restart nginx
+pkill -f apache2
+chmod 644 /etc/nginx/nginx.conf
+sed -Ei 's/\s*#?\s*user .*/user nginx;/' /etc/nginx/nginx.conf
+sed -Ei 's/(listen (\[::\]:)?80) /\180 /' /etc/nginx/sites-enabled/default
+sudo -u nginx service nginx restart
